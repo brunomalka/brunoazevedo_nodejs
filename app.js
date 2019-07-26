@@ -1,13 +1,13 @@
 // Carregando Modulos
-    const express = require("express")
+    const express    = require("express")
     const handlebars = require("express-handlebars")
     const bodyParser = require("body-parser")
-    const mongoose = require("mongoose")
-    const app = express()
-    const admin = require('./routes/admin')
-    const path = require('path')
-    const session = require('express-session')
-    const flash = require('connect-flash')
+    const mongoose   = require("mongoose")
+    const app        = express()
+    const admin      = require('./routes/admin')
+    const path       = require('path')
+    const session    = require('express-session')
+    const flash      = require('connect-flash')
 // Configurações
     // Sessão
         app.use(session({
@@ -31,11 +31,11 @@
     // Mongoose
         //provide a sensible default for local development
         const db_name = "blogapp";
-        mongodb_connection_string = 'mongodb://127.0.0.1:27017/' + db_name;
+        mongodb_connection_string = (process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://127.0.0.1:27017/') + db_name;
         //take advantage of openshift env vars when available:
-        if(process.env.OPENSHIFT_MONGODB_DB_URL){
-            mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + db_name;
-        }
+        //if(process.env.OPENSHIFT_MONGODB_DB_URL){
+        //    mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + db_name;
+        //}
         mongoose.Promise = global.Promise;
         mongoose.connect(mongodb_connection_string).then(()=>{
             console.log('conectado ao mongo;')
@@ -49,8 +49,8 @@
     app.use('/admin', admin)
 // Outros
 
-
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
+// Iniciando Serviço
+var server_port       = process.env.OPENSHIFT_NODEJS_PORT || 8080
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 app.listen(server_port, server_ip_address, () =>  {
